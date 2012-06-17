@@ -19,6 +19,27 @@ class MoviesController < ApplicationController
     end
     
     order = params[:order]
+    
+    @fill_from_session = false
+    def override_from_session(name, local_var)
+      if local_var.nil?
+        if !session[name].nil?
+          @fill_from_session = true
+          return session[name]
+        end
+      else
+        session[name] = local_var
+      end
+      return local_var
+    end
+    order = override_from_session(:order, order)
+    ratings = override_from_session(:ratings, ratings)
+    
+    if @fill_from_session
+      flash.keep
+      redirect_to url_for ({:order => order, :ratings => ratings})
+    end
+    
     @movies = Movie.find(:all, :conditions => conditions, :order => order)
   end
 

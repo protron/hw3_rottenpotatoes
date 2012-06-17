@@ -7,14 +7,19 @@ class MoviesController < ApplicationController
   end
 
   def index
-    case params[:format]
-      when 'title'
-        @movies = Movie.order('title').all
-      when 'releasedate'
-        @movies = Movie.order('release_date').all
-      else
-        @movies = Movie.all
+    @all_ratings = Movie.all_ratings
+    @checked_ratings = []
+    
+    conditions = {}
+    
+    ratings = params[:ratings]
+    if !ratings.nil?
+      @checked_ratings = ratings.keys
+      conditions[:rating] = @checked_ratings
     end
+    
+    order = params[:order]
+    @movies = Movie.find(:all, :conditions => conditions, :order => order)
   end
 
   def new

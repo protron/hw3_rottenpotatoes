@@ -20,10 +20,8 @@ end
 #  "When I check the following ratings: G"
 
 When /I (un)?check the following ratings: (.*)/ do |is_uncheck, rating_list|
-  # HINT: use String#split to split up the rating_list, then
-  #   iterate over the ratings and reuse the "When I check..." or
-  #   "When I uncheck..." steps in lines 89-95 of web_steps.rb
   rating_list.split(',').each do |rating|
+    field = "ratings_#{rating.strip}"
 	if is_uncheck
       uncheck(field)
     else

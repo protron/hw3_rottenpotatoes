@@ -20,12 +20,20 @@ end
 #  "When I check the following ratings: G"
 
 When /I (un)?check the following ratings: (.*)/ do |is_uncheck, rating_list|
-  rating_list.split(',').each do |rating|
-    field = "ratings_#{rating.strip}"
+  rating_list.split(/,\s*/).each do |rating|
+    field = "ratings_#{rating}"
 	if is_uncheck
       uncheck(field)
     else
       check(field)
     end
+  end
+end
+
+Then /I should see (.*) of the movies/ do |count|
+  if count == "none" or count == 0
+    page.should have_no_css("#movielist tr")
+  else
+	page.should have_css("#movielist tr", :count => count == "all" ? 10 : count)
   end
 end
